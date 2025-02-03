@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+</head>
+<body>
+  <h1>Админ-панель</h1>
+  <form id="upload-form" enctype="multipart/form-data">
+    <input type="file" name="image" id="image-input" required>
+    <button type="submit">Загрузить</button>
+  </form>
+  <ul id="image-list"></ul>
+  <script>
+    document.getElementById('upload-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const response = await fetch('/api/upload', { method: 'POST', body: formData });
+      alert(await response.text());
+      loadImages();
+    });
+
+    async function loadImages() {
+      const response = await fetch('/api/images');
+      const images = await response.json();
+      const list = document.getElementById('image-list');
+      list.innerHTML = '';
+      images.forEach(image => {
+        const li = document.createElement('li');
+        li.textContent = image;
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Удалить';
+        deleteButton.onclick = async () => {
+          await fetch(`/api/delete/${image}`, { method: 'DELETE' });
+          loadImages();
+        };
+        li.appendChild(deleteButton);
+        list.appendChild(li);
+      });
+    }
+
+    loadImages();
+  </script>
+</body>
+</html>
