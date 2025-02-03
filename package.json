@@ -1,5 +1,5 @@
 {
-    "name": "memory-game",
+    "name": "memory-site",
     "version": "1.0.0",
     "description": "",
     "main": "server/app.js",
